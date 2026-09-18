@@ -1,0 +1,349 @@
+#image-view {
+    z-index: 30;
+    left: 0;
+    overflow: hidden;
+    background-color: black;
+}
+
+/* The grid behind doesn't scroll, or show its scrollbar, while a video is open */
+body.video-open {
+    overflow: hidden;
+}
+
+/* The video takes the whole screen. The buttons and folder name float over it. */
+.image-view-body {
+    position: absolute;
+    inset: 0;
+    display: flex;
+}
+
+.image-container {
+    margin: auto;
+}
+
+/* The video fills the screen, however small it is, and letterboxes as needed */
+.image-container > video {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    object-fit: contain;
+    background: black;
+}
+
+/* Close, like and the layout switch, stacked down the top right */
+.side-actions {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: opacity 0.3s;
+}
+
+/* Play, mute and full screen, stacked up from the bottom right */
+.side-actions.player-actions {
+    top: auto;
+    bottom: 28px;
+}
+
+/* ---------- The app's own seek line ----------
+   .player-bar is an invisible strip wide enough to grab easily. The thin .seek
+   line sits along its outer edge and thickens while hovered. main.js sets
+   --played and --buffered (0 to 1) as the video plays. */
+
+.player-bar {
+    position: fixed;
+    z-index: 6;
+    cursor: pointer;
+    touch-action: none;
+}
+
+.seek {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.18);
+    transition: width 0.15s, height 0.15s, opacity 0.3s;
+}
+
+.seek-buffered,
+.seek-played {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.seek-buffered {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.seek-played {
+    background: var(--accent);
+}
+
+/* A dot at the playing position, shown while the line is hovered */
+.seek-handle {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+.player-bar:hover .seek-handle,
+.player-bar.seeking .seek-handle {
+    opacity: 1;
+}
+
+/* Along the bottom edge (and the top edge, below) */
+.controls-bottom .player-bar,
+.controls-top .player-bar {
+    left: 0;
+    right: 0;
+    height: 18px;
+}
+
+.controls-bottom .player-bar {
+    bottom: 0;
+}
+
+.controls-top .player-bar {
+    top: 0;
+}
+
+.controls-bottom .seek,
+.controls-top .seek {
+    left: 0;
+    right: 0;
+    height: 3px;
+}
+
+.controls-bottom .seek {
+    bottom: 0;
+}
+
+.controls-top .seek {
+    top: 0;
+}
+
+.controls-bottom .player-bar:hover .seek,
+.controls-bottom .player-bar.seeking .seek,
+.controls-top .player-bar:hover .seek,
+.controls-top .player-bar.seeking .seek {
+    height: 7px;
+}
+
+.controls-bottom .seek-buffered,
+.controls-top .seek-buffered {
+    height: 100%;
+    width: calc(var(--buffered, 0) * 100%);
+}
+
+.controls-bottom .seek-played,
+.controls-top .seek-played {
+    height: 100%;
+    width: calc(var(--played, 0) * 100%);
+}
+
+.controls-bottom .seek-handle,
+.controls-top .seek-handle {
+    top: 50%;
+    left: calc(var(--played, 0) * 100%);
+    margin: -6px 0 0 -6px;
+}
+
+/* Down the right-hand edge, top to bottom */
+.controls-side .player-bar {
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 18px;
+}
+
+.controls-side .seek {
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 3px;
+}
+
+.controls-side .player-bar:hover .seek,
+.controls-side .player-bar.seeking .seek {
+    width: 7px;
+}
+
+.controls-side .seek-buffered {
+    width: 100%;
+    height: calc(var(--buffered, 0) * 100%);
+}
+
+.controls-side .seek-played {
+    width: 100%;
+    height: calc(var(--played, 0) * 100%);
+}
+
+.controls-side .seek-handle {
+    left: 50%;
+    top: calc(var(--played, 0) * 100%);
+    margin: -6px 0 0 -6px;
+}
+
+/* Keep the buttons and the Next arrow clear of the line on the right */
+.controls-side .side-actions,
+.controls-side .nav-btn.next {
+    right: 26px;
+}
+
+/* With the bar at the top, everything up there moves down clear of it,
+   and the bottom button stack can sit lower */
+.controls-top .side-actions,
+.controls-top .video-info {
+    top: 26px;
+}
+
+.controls-top .side-actions.player-actions {
+    top: auto;
+    bottom: 16px;
+}
+
+/* "0:12 / 0:34", bottom left */
+.player-time {
+    position: fixed;
+    left: 16px;
+    bottom: 26px;
+    z-index: 5;
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: rgba(15, 15, 24, 0.7);
+    color: #d6d6e2;
+    font-size: 12px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    transition: opacity 0.3s;
+}
+
+.player-time:empty {
+    display: none;
+}
+
+.controls-top .player-time,
+.controls-side .player-time {
+    bottom: 16px;
+}
+
+/* The browser's own controls replace all of the above */
+.controls-browser .player-bar,
+.controls-browser .player-actions,
+.controls-browser .player-time {
+    display: none;
+}
+
+/* Names the layout for a moment after switching */
+.player-toast {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 7;
+    padding: 10px 18px;
+    border-radius: 20px;
+    background: rgba(15, 15, 24, 0.85);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+.player-toast.show {
+    opacity: 1;
+}
+
+/* About the video, top left: the album (last folder) large, the full folder
+   path under it, then the date and the account the reel came from */
+.video-info {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 5;
+    width: max-content;
+    max-width: min(300px, calc(100vw - 110px));
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-radius: 14px;
+    background: rgba(15, 15, 24, 0.7);
+    color: #d6d6e2;
+    font-size: 12px;
+    transition: opacity 0.3s;
+}
+
+.info-album {
+    color: white;
+    font-size: 17px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.info-path {
+    margin-bottom: 4px;
+    color: var(--muted);
+    font-size: 11px;
+    overflow-wrap: anywhere;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.info-row .fa {
+    width: 12px;
+    color: var(--muted);
+    text-align: center;
+}
+
+.info-row:has(span:empty) {
+    display: none;
+}
+
+/* With the mouse still, the buttons, the info, the time and the pointer
+   all get out of the way. The seek line stays, dimmed, as a progress line. */
+body.controls-idle .side-actions,
+body.controls-idle .video-info,
+body.controls-idle .player-time {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ...except the info, when it sits in the empty space beside a narrow video
+   rather than over the picture (main.js works that out) */
+body.controls-idle #image-view.info-fits .video-info {
+    opacity: 1;
+}
+
+body.controls-idle .seek {
+    opacity: 0.5;
+}
+
+body.controls-idle #image-view {
+    cursor: none;
+}
+
+/* Touch screens have no mouse movement to bring them back */
+@media (hover: none) {
+    body.controls-idle .side-actions,
+    body.controls-idle .video-info,
+    body.controls-idle .player-time {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}

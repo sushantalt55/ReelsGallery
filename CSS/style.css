@@ -1,0 +1,326 @@
+/* Colour scheme and shared sizes. Change the accent colour here. */
+:root {
+    --bg: #0b0b12;
+    --surface: #13131c;
+    --surface-2: #1b1b27;
+    --surface-3: #262636;
+    --border: rgba(255, 255, 255, 0.08);
+    --text: #f4f4f8;
+    --muted: #8f8fa8;
+
+    /* The accent is also set from the settings panel (see JS/settings.js) */
+    --accent: #3b82f6;
+    --accent-hover: #60a5fa;
+    --accent-glow: rgba(59, 130, 246, 0.35);
+    --heart: #ff2d6e;
+
+    --header-h: 44px;
+    --side-w: 260px;
+    /* Grid gap and corner radius are also set from the settings panel */
+    --gap: 4px;
+    --img-radius: 6px;
+    --radius: 8px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    /* Dragging across the page should not select labels */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Text you may actually want to select or copy */
+input,
+textarea,
+.video-info {
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+button {
+    font-family: inherit;
+}
+
+/* Thin dark scrollbars everywhere */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--surface-3) transparent;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--surface-3);
+    border: 2px solid transparent;
+    border-radius: 10px;
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #3a3a52;
+}
+
+/* ---------- Top bars ---------- */
+
+/* Three columns so the title stays centred whatever is on either side */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    height: var(--header-h);
+    padding: 0 12px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
+    background: rgba(11, 11, 18, 0.96);
+    border-bottom: 1px solid var(--border);
+    user-select: none;
+}
+
+/* Zoom and settings buttons, and Shuffle on the right.
+   (The video view has no top bar.) */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.brand {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    color: var(--accent);
+}
+
+/* ---------- Buttons ---------- */
+
+.icon-btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform 0.12s;
+}
+
+.icon-btn:hover {
+    background: var(--surface-3);
+    border-color: var(--border);
+    color: var(--text);
+}
+
+.icon-btn:active {
+    transform: scale(0.9);
+}
+
+.btn-primary {
+    height: 32px;
+    padding: 0 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    border-radius: 16px;
+    background: var(--accent);
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 14px var(--accent-glow);
+    transition: background-color 0.2s, box-shadow 0.2s, transform 0.12s;
+}
+
+.btn-primary:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 6px 20px var(--accent-glow);
+    transform: translateY(-1px);
+}
+
+.btn-primary:active {
+    transform: translateY(0) scale(0.96);
+}
+
+.btn-primary .fa {
+    transition: transform 0.4s;
+}
+
+.btn-primary:hover .fa {
+    transform: rotate(180deg);
+}
+
+/* Keyboard focus ring for every button */
+button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* Like buttons turn into a red filled heart */
+.like-btn.liked,
+.like-btn.liked:hover {
+    color: var(--heart);
+}
+
+.like-btn.pop .fa {
+    animation: heart-pop 0.35s ease;
+}
+
+@keyframes heart-pop {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.45); }
+    100% { transform: scale(1); }
+}
+
+/* ---------- Layout ---------- */
+
+/* Content starts below the fixed header */
+.page {
+    display: flex;
+    flex-direction: row;
+    padding-top: var(--header-h);
+}
+
+
+/* ---------- Video grid ---------- */
+
+/* Equal columns of 9:16 tiles. The column count comes from the −/+ buttons. */
+#imagerow {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr));
+    gap: var(--gap);
+    padding: var(--gap);
+}
+
+/* A tile: the thumbnail, a play badge in the corner, and the hover preview on top.
+   The grey background shows until the thumbnail is ready. */
+.video-tile {
+    position: relative;
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
+    border-radius: var(--img-radius);
+    background: var(--surface-2);
+    cursor: pointer;
+}
+
+.video-tile .thumb,
+.video-tile .preview {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Hidden until it is actually playing, so the thumbnail doesn't flash away */
+.video-tile .preview {
+    opacity: 0;
+}
+
+.video-tile .preview.playing {
+    opacity: 1;
+}
+
+/* A video that could not be loaded */
+.video-tile.failed::after {
+    content: '\f05e';
+    font-family: FontAwesome;
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 20px;
+}
+
+.video-badge {
+    position: absolute;
+    z-index: 1;
+    top: 6px;
+    right: 6px;
+    padding: 3px 7px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    pointer-events: none;
+}
+
+.video-badge .fa {
+    font-size: 9px;
+}
+
+.video-duration:empty {
+    display: none;
+}
+
+/* Out of the way while the preview plays */
+.video-tile:hover .video-badge {
+    opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .like-btn.pop .fa {
+        animation: none;
+    }
+}
+
+/* Animations switched off in the settings panel */
+body.no-anim *,
+body.no-anim *::before,
+body.no-anim *::after {
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Note shown when infinite scroll reaches its limit */
+.grid-end {
+    padding: 22px 12px 28px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.hidden {
+    display: none;
+}

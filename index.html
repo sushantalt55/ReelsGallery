@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ReelsGallery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/modal.css">
+    <link rel="stylesheet" href="CSS/image-view.css">
+    <link rel="stylesheet" href="CSS/settings.css">
+    <script src="JS/settings.js" defer></script>
+    <script src="JS/main.js" defer></script>
+</head>
+
+
+<body>
+    <header class="header main-head">
+        <div class="header-left">
+            <button class="icon-btn" title="Zoom out" onclick="zoomOut()"><i class="fa fa-minus"></i></button>
+            <button class="icon-btn" title="Zoom in" onclick="zoomIn()"><i class="fa fa-plus"></i></button>
+            <button class="icon-btn settings-toggle" title="Settings" onclick="toggleSettings()"><i class="fa fa-cog"></i></button>
+        </div>
+        <span class="brand">ReelsGallery</span>
+        <div class="header-right">
+            <button class="btn-primary" title="Show a new random set" onclick="render()">
+                <i class="fa fa-random"></i><span>Shuffle</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="page">
+        <div class="settings-panel hidden">
+            <div class="settings-head">
+                <span>Settings</span>
+                <button class="icon-btn close" title="Close settings" onclick="closeSettings()"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="settings-body">
+                <div class="setting-group">
+                    <h3>Accent colour</h3>
+                    <div class="swatches"></div>
+                    <label class="setting-row">
+                        <span>Custom colour</span>
+                        <input type="color" id="set-accent" onchange="setSetting('accent', this.value)">
+                    </label>
+                </div>
+
+                <div class="setting-group">
+                    <h3>Layout</h3>
+                    <label class="setting-row">
+                        <span>Gap</span>
+                        <input type="range" id="set-gap" min="0" max="16" step="1" oninput="setSetting('gap', +this.value)">
+                        <span class="setting-value" id="gap-value"></span>
+                    </label>
+                    <label class="setting-row">
+                        <span>Corner radius</span>
+                        <input type="range" id="set-radius" min="0" max="20" step="1" oninput="setSetting('imgRadius', +this.value)">
+                        <span class="setting-value" id="radius-value"></span>
+                    </label>
+                    <label class="setting-row">
+                        <span>Videos per batch</span>
+                        <select id="set-count" onchange="setSetting('gridCount', +this.value)">
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="200">200</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="setting-group">
+                    <h3>Videos</h3>
+                    <label class="setting-row">
+                        <span>Preview on hover</span>
+                        <input type="checkbox" class="switch" id="set-hover" onchange="setSetting('hoverPreview', this.checked)">
+                    </label>
+                    <label class="setting-row">
+                        <span>Loop</span>
+                        <input type="checkbox" class="switch" id="set-loop" onchange="setSetting('loopVideos', this.checked)">
+                    </label>
+                    <label class="setting-row">
+                        <span>Start muted</span>
+                        <input type="checkbox" class="switch" id="set-mute" onchange="setSetting('muteVideos', this.checked)">
+                    </label>
+                    <label class="setting-row">
+                        <span>Player controls</span>
+                        <select id="set-controls" onchange="setSetting('playerControls', this.value)">
+                            <option value="bottom">Bar at bottom</option>
+                            <option value="side">Bar on right</option>
+                            <option value="top">Bar at top</option>
+                            <option value="browser">Browser's own</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="setting-group">
+                    <h3>Behaviour</h3>
+                    <label class="setting-row">
+                        <span>Infinite scroll</span>
+                        <input type="checkbox" class="switch" id="set-infinite" onchange="setSetting('infinite', this.checked)">
+                    </label>
+                    <label class="setting-row">
+                        <span>Hide arrows when idle</span>
+                        <input type="checkbox" class="switch" id="set-autohide" onchange="setSetting('autoHideNav', this.checked)">
+                    </label>
+                    <label class="setting-row">
+                        <span>Animations</span>
+                        <input type="checkbox" class="switch" id="set-anim" onchange="setSetting('animations', this.checked)">
+                    </label>
+                </div>
+
+                <div class="setting-group">
+                    <h3>Likes</h3>
+                    <p class="setting-note" id="likes-summary"></p>
+                    <button class="btn-danger" onclick="clearLikes()">Clear all likes</button>
+                </div>
+
+                <div class="setting-group">
+                    <button class="btn-ghost" onclick="resetSettings()">Reset to defaults</button>
+                </div>
+            </div>
+        </div>
+        <div id="imagerow">
+        </div>
+    </div>
+
+    <div class="grid-end hidden">
+        That's 1000 videos. Press Shuffle for a new set.
+    </div>
+
+
+    <div id="image-view" class="modal">
+        <!-- No top bar: the video gets the whole screen, and these float over it -->
+        <!-- About the video: album, folder path, date and account, top left -->
+        <div class="video-info">
+            <div class="info-album"></div>
+            <div class="info-path"></div>
+            <div class="info-row info-date"><i class="fa fa-calendar-o"></i><span></span></div>
+            <div class="info-row info-user"><i class="fa fa-user-o"></i><span></span></div>
+        </div>
+        <div class="side-actions">
+            <button class="side-btn" title="Back to the grid (Esc)" onclick="closeVideoView()"><i class="fa fa-times"></i></button>
+            <button class="side-btn like-btn image-liked" title="Like video" onclick="videoLike()"><i class="fa fa-heart-o"></i></button>
+            <button class="side-btn layout-btn" onclick="cycleControls()"><i class="fa fa-sliders"></i></button>
+        </div>
+        <!-- Only with the app's own controls (see the playerControls setting) -->
+        <div class="side-actions player-actions">
+            <button class="side-btn play-btn" title="Play / pause (Space)" onclick="togglePlay()"><i class="fa fa-pause"></i></button>
+            <button class="side-btn mute-btn" title="Mute (M)" onclick="toggleMute()"><i class="fa fa-volume-up"></i></button>
+            <button class="side-btn fs-btn" title="Full screen (F)" onclick="toggleFullscreen()"><i class="fa fa-expand"></i></button>
+        </div>
+        <!-- The app's own seek line: a wide invisible strip to grab, with a thin line inside -->
+        <div class="player-bar">
+            <div class="seek">
+                <div class="seek-buffered"></div>
+                <div class="seek-played"></div>
+                <div class="seek-handle"></div>
+            </div>
+        </div>
+        <span class="player-time"></span>
+        <span class="player-toast"></span>
+        <div class="image-view-body">
+            <div class="image-container">
+            </div>
+        </div>
+        <div class="view-nav">
+            <button class="nav-btn prev" title="Previous video" onclick="prevVideo()"><i class="fa fa-chevron-left"></i></button>
+            <button class="nav-btn next" title="Next random video" onclick="nextVideo()"><i class="fa fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,214 @@
+/* Settings panel. Opens on the left, over the grid. */
+.settings-panel {
+    position: fixed;
+    top: var(--header-h);
+    left: 0;
+    bottom: 0;
+    z-index: 25;
+    width: var(--side-w);
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow: hidden;
+}
+
+/* This file loads after style.css, so the generic .hidden needs restating here */
+.settings-panel.hidden {
+    display: none;
+}
+
+.settings-head {
+    height: 46px;
+    padding: 0 8px 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.settings-body {
+    padding: 4px 16px 20px;
+    overflow-y: auto;
+}
+
+.setting-group {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.setting-group:last-child {
+    border-bottom: none;
+}
+
+.setting-group h3 {
+    margin: 0 0 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.setting-row {
+    min-height: 32px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 13px;
+    color: #d6d6e2;
+}
+
+.setting-row:last-child {
+    margin-bottom: 0;
+}
+
+/* Keep labels on one line and let the control take the leftover width */
+.setting-row > span:first-child {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.setting-value {
+    min-width: 34px;
+    text-align: right;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+}
+
+.setting-note {
+    margin: 0 0 10px;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+/* ---------- Accent swatches ---------- */
+
+.swatches {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 7px;
+    margin-bottom: 14px;
+}
+
+.swatch {
+    height: 28px;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+    transition: transform 0.12s, border-color 0.2s;
+}
+
+.swatch:hover {
+    transform: translateY(-2px);
+}
+
+.swatch.active {
+    border-color: var(--text);
+}
+
+/* ---------- Form controls ---------- */
+
+input[type="color"] {
+    width: 42px;
+    height: 28px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--surface-2);
+    cursor: pointer;
+}
+
+input[type="range"] {
+    flex: 1;
+    min-width: 0;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+select {
+    height: 30px;
+    padding: 0 8px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface-2);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* Pill switch */
+.switch {
+    position: relative;
+    width: 38px;
+    height: 22px;
+    flex-shrink: 0;
+    margin: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    border-radius: 11px;
+    background: var(--surface-3);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.switch::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--muted);
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.switch:checked {
+    background: var(--accent);
+}
+
+.switch:checked::after {
+    background: white;
+    transform: translateX(16px);
+}
+
+/* ---------- Panel buttons ---------- */
+
+.btn-ghost,
+.btn-danger {
+    width: 100%;
+    height: 34px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--surface-2);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s, transform 0.12s;
+}
+
+.btn-ghost:hover {
+    background: var(--surface-3);
+}
+
+.btn-danger:hover {
+    background: rgba(255, 45, 110, 0.15);
+    border-color: var(--heart);
+    color: var(--heart);
+}
+
+.btn-ghost:active,
+.btn-danger:active {
+    transform: scale(0.98);
+}

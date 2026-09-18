@@ -1,0 +1,89 @@
+/* The video view */
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    overflow: auto;
+}
+
+/* ---------- Floating round buttons ---------- */
+
+/* Previous / next in the middle of each side */
+.nav-btn {
+    position: fixed;
+    top: 50%;
+    z-index: 5;
+    width: 50px;
+    height: 50px;
+    margin-top: -25px;
+}
+
+/* Close and like, top right (placed in image-view.css) */
+.side-btn {
+    width: 44px;
+    height: 44px;
+}
+
+.nav-btn,
+.side-btn {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 50%;
+    background: rgba(15, 15, 24, 0.8);
+    color: white;
+    font-size: 17px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    transition: opacity 0.3s, background-color 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.12s;
+}
+
+.nav-btn:hover,
+.side-btn:hover {
+    background: var(--accent);
+    border-color: transparent;
+    box-shadow: 0 6px 22px var(--accent-glow);
+}
+
+.nav-btn:active,
+.side-btn:active {
+    transform: scale(0.92);
+}
+
+/* A liked video's heart stays red, even on hover */
+.side-btn.like-btn.liked,
+.side-btn.like-btn.liked:hover {
+    color: var(--heart);
+}
+
+.nav-btn.prev {
+    left: 16px;
+}
+
+.nav-btn.next {
+    right: 16px;
+}
+
+/* No previous button until there is a video to go back to */
+.nav-btn.hidden {
+    display: none;
+}
+
+/* Arrows fade out when the mouse has been still for a moment */
+body.controls-idle .nav-btn {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Touch screens have no mouse movement to bring them back */
+@media (hover: none) {
+    body.controls-idle .nav-btn {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
